@@ -4,15 +4,16 @@ orbs:
   react-native: echobind/react-native@0.3.0
 workflows:
   version: 2
-  main:
-    jobs:
-      - react-native/node:
-        name: node
-      - react-native/android:
-        name: android
-        requires:
-          - node
-        build:
-          - run:
-              name: fastlane adhoc android
-              working_directory: android
+  jobs:
+    - react-native/node:
+      name: node
+    - react-native/android:
+      name: android
+      requires:
+        - node
+      build:
+        - run:
+            name: fastlane adhoc android
+            working_directory: android
+            command: |
+              echo "Running"
