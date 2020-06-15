@@ -1,0 +1,22 @@
+version: 2.1
+working_directory: ~/CICD
+orbs:
+  react-native: echobind/react-native@0.3.0
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - react-native/node:
+          name: node
+      - react-native/android:
+          name: android
+          requires:
+            - node
+          build:
+            - run:
+                name: fastlane adhoc android
+                working_directory: android
+                command: |
+                  bundle exec fastlane beta
+              
