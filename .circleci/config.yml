@@ -79,7 +79,7 @@ aliases: # Cache Management
     command: |
       cd CICD && yarn test --coverage --maxWorkers=2
 
-version: 2.1
+version: 2
 
 jobs:
   build:
