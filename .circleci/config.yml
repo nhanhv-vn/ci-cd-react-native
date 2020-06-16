@@ -1,22 +1,171 @@
+aliases: # Cache Management
+  - &restore-yarn-cache
+    keys:
+      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
+      # Fallback in case checksum fails
+      - yarn-0605-{{ arch }}-{{ .Branch }}-
+      # Fallback in case this is a first-time run on a fork
+      - yarn-0605-{{ arch }}-master-
+
+  - &save-yarn-cache
+    paths:
+      - CICD/node_modules
+      - ~/CICD/.cache/yarn
+    key: yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
+
+  - &restore-react-native-cli
+    keys:
+      - react-native-cli-0605-{{ arch }}
+
+  - &save-react-native-cli
+    paths:
+      - c/node_modules
+    key: react-native-cli-0605-{{ arch }}
+
+  - &restore-fastlane
+    keys:
+      - fastlane-0605-{{ arch }}
+
+  - &save-fastlane
+    paths:
+      - ~/CICD/fastlane
+    key: fastlane-0605-{{ arch }}
+
+  - &restore-gem-android
+    keys:
+      - gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
+      # Fallback in case checksum fails
+      - gem-0605-{{ arch }}-{{ .Branch }}-
+      # Fallback in case this is a first-time run on a fork
+      - gem-0605-{{ arch }}-master-
+
+  - &save-gem-android
+    paths:
+      - CICD/android/vendor/bundle
+    key: gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
+
+  - &install-node-version
+    name: Install Nodejs version
+    command: |
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash
+      echo 'export NVM_DIR="/Users/distiller/.nvm"' >> $BASH_ENV
+      echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV # This loads nvm
+      source /Users/distiller/.bashrc
+      nvm install v14.2.0
+      nvm use v14.2.0
+
+  - &install-react-native-cli
+    name: Install react-native-cli
+    command: |
+      cd CICD && yarn add react-native-cli
+
+  - &install-fastlane-android
+    name: Install fastlane
+    command: |
+      cd CICD/android
+      bundle update
+      gem install json
+      bundle install --path vendor/bundle
+
+  - &yarn
+    name: Install Node Dependencies
+    command: |
+      rm -rf node_modules
+      rm -rf ~/.rncache
+      cd CICD && yarn cache clean && yarn install
+
+  - &test
+    name: Run unit test
+    command: |
+      cd CICD && yarn test --coverage --maxWorkers=2
+
 version: 2.1
-working_directory: ~/CICD
-orbs:
-  react-native: echobind/react-native@0.3.0
+
+jobs:
+  build:
+    working_directory: ~/CICD
+    docker:
+      - image: circleci/node:14.2.0
+
+    steps:
+      - checkout
+
+      - restore-cache: *restore-yarn-cache
+      - run: *yarn
+      - save-cache: *save-yarn-cache
+
+      - persist_to_workspace:
+          root: ~/CICD
+          paths:
+            - .
+  
+  test:
+    working_directory: ~/CICD/
+    docker:
+      - image: circleci/node:14.2.0
+    steps:
+      - checkout
+    
+      - restore-cache: *restore-yarn-cache
+      - run: *yarn
+      - save-cache: *save-yarn-cache
+
+      - run: *test
+
+  android:
+    working_directory: ~/CICD/
+    environment:
+      TERM: dumb
+      JAVA_OPTS: "-Xms512m -Xmx2g"
+      GRADLE_OPTS: '-Xmx3g -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
+
+    docker:
+      - image: circleci/android:api-28-node8-alpha
+
+    steps:
+      - checkout
+
+      - restore-cache: *restore-yarn-cache
+      - run: *yarn
+      - save-cache: *save-yarn-cache
+
+      - restore-cache: *restore-gem-android
+      - save-cache: *save-gem-android
+
+      - run: *install-fastlane-android
+
+      - run:
+          name: version patch
+          command: |
+            cd CICD
+            npm version patch
+
+      - run: *test
+
+      - run:
+          name: Approve license for build tools
+          command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
+      - run:
+          name: Build apk
+          working_directory: android
+          command: |
+            bundle exec fastlane deploy
 
 workflows:
   version: 2
   deploy:
     jobs:
-      - react-native/node:
-          name: node
-      - react-native/android:
-          name: android
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+
+      - android:
           requires:
-            - node
-          build:
-            - run:
-                name: fastlane adhoc android
-                working_directory: android
-                command: |
-                  bundle exec fastlane deploy
-              
+            - build
+          filters:
+            branches:
+              only:
+                - master
