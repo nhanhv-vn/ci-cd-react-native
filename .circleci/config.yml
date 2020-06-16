@@ -18,5 +18,5 @@ workflows:
                 name: fastlane adhoc android
                 working_directory: android
                 command: |
-                  bundle exec fastlane beta
+                  bundle exec fastlane deploy
               
