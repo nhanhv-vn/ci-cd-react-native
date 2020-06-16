@@ -120,7 +120,7 @@ jobs:
       GRADLE_OPTS: '-Xmx3g -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
 
     docker:
-      - image: circleci/android:api-28-node8-alpha
+      - image: circleci/android:api-29-node
 
     steps:
       - checkout
