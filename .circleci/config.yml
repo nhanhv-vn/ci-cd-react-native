@@ -148,8 +148,9 @@ jobs:
 
       - run:
           name: Build apk
-          working_directory: CICD/android
+          # working_directory: CICD/android
           command: |
+            cd CICD/android
             bundle exec fastlane deploy
 
 workflows:
