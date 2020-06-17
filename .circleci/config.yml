@@ -1,54 +1,79 @@
-variables:
-  - name: ROOT_DIR
-    value: ~/CICD
-aliases: # Cache Management
+aliases:
+  # Common caches
   - &restore-yarn-cache
     keys:
-      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
-      # Fallback in case checksum fails
-      - yarn-0605-{{ arch }}-{{ .Branch }}-
-      # Fallback in case this is a first-time run on a fork
-      - yarn-0605-{{ arch }}-master-
+      - package-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
+      - package-cache-v1-{{ arch }}-{{ .Branch }}-
+      - package-cache-v1-{{ arch }}-master-
 
   - &save-yarn-cache
     paths:
       - CICD/node_modules
       - ~/CICD/.cache/yarn
-    key: yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
+    key: package-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
 
   - &restore-react-native-cli
     keys:
-      - react-native-cli-0605-{{ arch }}
+      - react-native-cli-cache-v1-{{ arch }}
 
   - &save-react-native-cli
     paths:
-      - c/node_modules
-    key: react-native-cli-0605-{{ arch }}
+      - CICD/node_modules
+    key: react-native-cache-v1-{{ arch }}
 
   - &restore-fastlane
     keys:
-      - fastlane-0605-{{ arch }}
+      - fastlane-cache-v1-{{ arch }}
 
   - &save-fastlane
     paths:
       - ~/CICD/fastlane
-    key: fastlane-0605-{{ arch }}
+    key: fastlane-cache-v1-{{ arch }}
 
+  # Android cache
   - &restore-gem-android
     keys:
-      - gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
+      - gem-android-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
       # Fallback in case checksum fails
-      - gem-0605-{{ arch }}-{{ .Branch }}-
+      - gem-android-cache-v1-{{ arch }}-{{ .Branch }}-
       # Fallback in case this is a first-time run on a fork
-      - gem-0605-{{ arch }}-master-
+      - gem-android-cache-v1-{{ arch }}-master-
 
   - &save-gem-android
     paths:
       - CICD/android/vendor/bundle
-    key: gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
+    key: gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }
+
+  - &branches
+    only:
+      - master
+
+  # iOS cache
+  # - &restore-gem-ios
+  #   keys:
+  #     - gem-ios-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Gemfile.lock" }}
+  #     - gem-ios-cache-v1-{{ arch }}-{{ .Branch }}-
+  #     - gem-ios-cache-v1-{{ arch }}-master-
+
+  # - &save-gem-ios
+  #   paths:
+  #     - CICD/ios/vendor/bundle
+  #   key: gem-ios-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Gemfile.lock" }
+
+  #  - &restore-cocoapods
+  #   keys:
+  #     - cocoapods-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Podfile.lock" }}
+  #     - cocoapods-cache-v1-{{ arch }}-{{ .Branch }}-
+  #     - cocoapods-cache-v1-{{ arch }}-master-
+
+  # - &save-cocoapods
+  #   paths:
+  #     - ~/.cocoapods
+  #     - CICD/ios/Pods
+  #   key: cocoapods-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Podfile.lock" }}
 
   - &install-node-version
-    name: Install Nodejs version
+    name: Install Nodejs version 14.2.0
     command: |
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash
       echo 'export NVM_DIR="/Users/distiller/.nvm"' >> $BASH_ENV
@@ -70,6 +95,21 @@ aliases: # Cache Management
       gem install json
       bundle install --path vendor/bundle
 
+  # - &install-fastlane-ios
+  #   name: Install fastlane & bundler
+  #   command: |
+  #     brew update
+  #     brew install ruby
+  #     brew cask install fastlane
+
+  # - &install-bundler-ios
+  #   name: Bundler install
+  #   command: |
+  #     cd CICD/ios
+  #     gem install json
+  #     bundle update
+  #     bundle install --path vendor/bundle
+
   - &yarn
     name: Install Node Dependencies
     command: |
@@ -80,13 +120,39 @@ aliases: # Cache Management
   - &test
     name: Run unit test
     command: |
-      cd CICD && yarn test --coverage --maxWorkers=2
+      cd CICD && yarn test --coverage
+
+    # Jest CLI Options: https://jestjs.io/docs/en/cli.html
+  # - &install-cocoapods
+  #   name: Install CocoaPods
+  #   command: |
+  #     cd CICD/ios
+  #     pod --version
+  #     curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+  #     rm -rf Pods && pod install
+  #     chmod u+x tools/strip_unused_archs.sh
+  # - &create-env-file
+  #   name: Create .env file
+  #   command: |
+  #     if [ $CIRCLE_BRANCH == "master" ]; then
+  #       echo ENV for Production
+  #     elif [ $CIRCLE_BRANCH == "beta" ]; then
+  #       echo ENV for beta
+  #     else
+  #       echo Deploying testing
+  #     fi
+
+  - &version-patch
+    name: version patch
+    command: |
+      cd CICD
+      npm version patch
 
 version: 2
 
 jobs:
   build:
-    working_directory: echo "$ROOT_DIR"
+    working_directory: ~/CICD
     docker:
       - image: circleci/node:14.2.0
 
@@ -117,10 +183,10 @@ jobs:
 
   android:
     working_directory: ~/CICD/
-    environment:
-      TERM: dumb
-      JAVA_OPTS: "-Xms512m -Xmx2g"
-      GRADLE_OPTS: '-Xmx3g -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
+    # environment:
+    #   TERM: dumb
+    #   JAVA_OPTS: "-Xms512m -Xmx2g"
+    #   GRADLE_OPTS: '-Xmx3g -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
 
     docker:
       - image: circleci/android:api-29-node
@@ -137,11 +203,7 @@ jobs:
 
       - run: *install-fastlane-android
 
-      - run:
-          name: version patch
-          command: |
-            cd CICD
-            npm version patch
+      - run: *version-patch
 
       - run: *test
 
@@ -151,10 +213,46 @@ jobs:
 
       - run:
           name: Build apk
-          # working_directory: CICD/android
           command: |
             cd CICD/android
             bundle exec fastlane deploy
+
+  # ios:
+  #   working_directory: ~/CICD
+  #   macos:
+  #     code: "11.4.1"
+  #   environment:
+  #     FL_OUTPUT_DIR: output
+  #     FASTLANE_LANE: ${CIRCLE_BRANCH}
+  #   shell: /bin/bash --login -o pipefail
+  #   steps:
+  #     - checkout
+  #     - restore-cache: *restore-gem-ios
+  #     - run: *install-bundler-ios
+  #     - save-cache: *save-gem-ios
+  #     - run: *install-node-version
+  #     - restore-cache: *restore-yarn-cache
+  #     - run: *yarn
+  #     - save-cache: *save-yarn-cache
+  #     - run: *create-env-file
+  #     - run: *test
+  #      - restore-cache: *restore-cocoapods
+  #     - run: *install-cocoapods
+  #     - save-cache: *save-cocoapods
+  #     - restore-cache: *restore-react-native-cli
+  #     - run: *install-react-native-cli
+  #     - save-cache: *save-react-native-cli
+  #     - run: *version-patch
+  #     - run:
+  #         name: Create a main.jsbundle
+  #         command: |
+  #           cd CICD
+  #           node ./node_modules/react-native-cli/index.js bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'
+  #     - run:
+  #       name: Build and deploy ios
+  #       command: |
+  #         cd CICD/ios
+  #         bundle exec fastlane deploy
 
 workflows:
   version: 2
@@ -162,14 +260,9 @@ workflows:
     jobs:
       - build:
           filters:
-            branches:
-              only:
-                - master
-
+            branches: *branches
       - android:
           requires:
             - build
           filters:
-            branches:
-              only:
-                - master
+            branches: *branches
