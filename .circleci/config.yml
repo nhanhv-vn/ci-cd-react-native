@@ -1,10 +1,10 @@
 variables:
   - name: ROOT
-    value: ~/CICD
+    value: CICD
 aliases: # Cache Management
   - &restore-yarn-cache
     keys:
-      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "${{variables.ROOT}}/package.json" }}
+      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$ROOT/package.json" }}
       # Fallback in case checksum fails
       - yarn-0605-{{ arch }}-{{ .Branch }}-
       # Fallback in case this is a first-time run on a fork
