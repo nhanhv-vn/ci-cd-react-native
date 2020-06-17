@@ -69,7 +69,7 @@ aliases: # Cache Management
   - &install-react-native-cli
     name: Install react-native-cli
     command: |
-      cd $ROOT_DIR && yarn add react-native-cli
+      cd $DIR && yarn add react-native-cli
 
   - &install-fastlane-android
     name: Install fastlane for android
@@ -84,12 +84,12 @@ aliases: # Cache Management
     command: |
       rm -rf node_modules
       rm -rf ~/.rncache
-      cd CICD && yarn cache clean && yarn install
+      cd $DIR && yarn cache clean && yarn install
 
   - &test
     name: Run unit test
     command: |
-      cd $ROOT_DIR && yarn test --coverage --maxWorkers=2
+      cd $DIR && yarn test --coverage --maxWorkers=2
 
 version: 2
 
@@ -112,7 +112,7 @@ jobs:
             - .
 
   test:
-    working_directory: $ROOT_DIR
+    working_directory: $ROOT_DIR/
     docker:
       - image: circleci/node:14.2.0
     steps:
@@ -125,7 +125,7 @@ jobs:
       - run: *test
 
   android:
-    working_directory: $ROOT_DIR
+    working_directory: $ROOT_DIR/
     environment:
       TERM: dumb
       JAVA_OPTS: "-Xms512m -Xmx2g"
