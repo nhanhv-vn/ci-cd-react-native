@@ -42,7 +42,7 @@ aliases:
   - &save-gem-android
     paths:
       - CICD/android/vendor/bundle
-    key: gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }
+    key: gem-android-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
 
   - &branches
     only:
@@ -183,10 +183,10 @@ jobs:
 
   android:
     working_directory: ~/CICD/
-    # environment:
-    #   TERM: dumb
-    #   JAVA_OPTS: "-Xms512m -Xmx2g"
-    #   GRADLE_OPTS: '-Xmx3g -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
+    environment:
+      TERM: dumb
+      JAVA_OPTS: "-Xms512m -Xmx2g"
+      GRADLE_OPTS: '-Xmx3g -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
 
     docker:
       - image: circleci/android:api-29-node
@@ -216,6 +216,7 @@ jobs:
           command: |
             if [ $CIRCLE_BRANCH == "beta" ]]; then
               cd CICD/android/app && echo $ENCODED_KEYSTORE_BETA | sed 's/ /\n/g' | base64 --decode >> release.keystore
+              ls -a
             fi
       - run:
           name: Build apk
