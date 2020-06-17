@@ -47,6 +47,7 @@ aliases:
   - &branches
     only:
       - master
+      - beta
 
   # iOS cache
   # - &restore-gem-ios
