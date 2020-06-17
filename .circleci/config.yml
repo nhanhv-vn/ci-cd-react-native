@@ -1,19 +1,10 @@
 variables:
   - name: ROOT_DIR
     value: ~/CICD
-  - name: DIR
-    value: CICD
-  - name: NODE_MODULES
-    value: CICD/node_modules
-  - name: YARN_CACHE
-    value: ~/CICD/.cache/yarn
-  - name: ROOT_ANDROID
-    value: CICD/android
-
 aliases: # Cache Management
   - &restore-yarn-cache
     keys:
-      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$DIR/package.json" }}
+      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
       # Fallback in case checksum fails
       - yarn-0605-{{ arch }}-{{ .Branch }}-
       # Fallback in case this is a first-time run on a fork
@@ -21,9 +12,9 @@ aliases: # Cache Management
 
   - &save-yarn-cache
     paths:
-      - $NODE_MODULES
-      - $YARN_CACHE
-    key: yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$DIR/package.json" }}
+      - CICD/node_modules
+      - ~/CICD/.cache/yarn
+    key: yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/package.json" }}
 
   - &restore-react-native-cli
     keys:
@@ -31,7 +22,7 @@ aliases: # Cache Management
 
   - &save-react-native-cli
     paths:
-      - $NODE_MODULES
+      - c/node_modules
     key: react-native-cli-0605-{{ arch }}
 
   - &restore-fastlane
@@ -45,7 +36,7 @@ aliases: # Cache Management
 
   - &restore-gem-android
     keys:
-      - gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$ROOT_ANDROID/Gemfile.lock" }}
+      - gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
       # Fallback in case checksum fails
       - gem-0605-{{ arch }}-{{ .Branch }}-
       # Fallback in case this is a first-time run on a fork
@@ -53,8 +44,8 @@ aliases: # Cache Management
 
   - &save-gem-android
     paths:
-      - $ROOT_ANDROID/vendor/bundle
-    key: gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$ROOT_ANDROID/Gemfile.lock" }}
+      - CICD/android/vendor/bundle
+    key: gem-0605-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
 
   - &install-node-version
     name: Install Nodejs version
@@ -69,12 +60,12 @@ aliases: # Cache Management
   - &install-react-native-cli
     name: Install react-native-cli
     command: |
-      cd $DIR && yarn add react-native-cli
+      cd CICD && yarn add react-native-cli
 
   - &install-fastlane-android
-    name: Install fastlane for android
+    name: Install fastlane
     command: |
-      cd $ROOT_ANDROID
+      cd CICD/android
       bundle update
       gem install json
       bundle install --path vendor/bundle
@@ -84,18 +75,18 @@ aliases: # Cache Management
     command: |
       rm -rf node_modules
       rm -rf ~/.rncache
-      cd $DIR && yarn cache clean && yarn install
+      cd CICD && yarn cache clean && yarn install
 
   - &test
     name: Run unit test
     command: |
-      cd $DIR && yarn test --coverage --maxWorkers=2
+      cd CICD && yarn test --coverage --maxWorkers=2
 
 version: 2
 
 jobs:
   build:
-    working_directory: $ROOT_DIR
+    working_directory: { { ROOT_DIR } }
     docker:
       - image: circleci/node:14.2.0
 
@@ -107,12 +98,12 @@ jobs:
       - save-cache: *save-yarn-cache
 
       - persist_to_workspace:
-          root: $ROOT_DIR
+          root: ~/CICD
           paths:
             - .
 
   test:
-    working_directory: $ROOT_DIR/
+    working_directory: ~/CICD/
     docker:
       - image: circleci/node:14.2.0
     steps:
@@ -125,7 +116,7 @@ jobs:
       - run: *test
 
   android:
-    working_directory: $ROOT_DIR/
+    working_directory: ~/CICD/
     environment:
       TERM: dumb
       JAVA_OPTS: "-Xms512m -Xmx2g"
@@ -149,7 +140,7 @@ jobs:
       - run:
           name: version patch
           command: |
-            cd $DIR
+            cd CICD
             npm version patch
 
       - run: *test
@@ -160,9 +151,9 @@ jobs:
 
       - run:
           name: Build apk
-
+          # working_directory: CICD/android
           command: |
-            cd $ROOT_ANDROID
+            cd CICD/android
             bundle exec fastlane deploy
 
 workflows:
