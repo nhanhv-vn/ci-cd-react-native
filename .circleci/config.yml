@@ -1,6 +1,8 @@
 variables:
   - name: ROOT_DIR
     value: ~/CICD
+  - name: DIR
+    value: CICD
   - name: NODE_MODULES
     value: CICD/node_modules
   - name: YARN_CACHE
@@ -11,7 +13,7 @@ variables:
 aliases: # Cache Management
   - &restore-yarn-cache
     keys:
-      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$ROOT_DIR/package.json" }}
+      - yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$DIR/package.json" }}
       # Fallback in case checksum fails
       - yarn-0605-{{ arch }}-{{ .Branch }}-
       # Fallback in case this is a first-time run on a fork
@@ -21,7 +23,7 @@ aliases: # Cache Management
     paths:
       - $NODE_MODULES
       - $YARN_CACHE
-    key: yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$ROOT_DIR/package.json" }}
+    key: yarn-0605-{{ arch }}-{{ .Branch }}-{{ checksum "$DIR/package.json" }}
 
   - &restore-react-native-cli
     keys:
@@ -147,7 +149,7 @@ jobs:
       - run:
           name: version patch
           command: |
-            cd $ROOT_DIR
+            cd $DIR
             npm version patch
 
       - run: *test
