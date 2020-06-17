@@ -86,7 +86,7 @@ version: 2
 
 jobs:
   build:
-    working_directory: { { ROOT_DIR } }
+    working_directory: "$ROOT_DIR"
     docker:
       - image: circleci/node:14.2.0
 
