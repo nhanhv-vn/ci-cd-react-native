@@ -11,7 +11,6 @@ platform :android do
     gradle(task: "clean")
     gradle(
       task: 'assemble',
-      flavor: 'Beta',
       build_type: 'Beta'
     )
     if options[:upload_store]
@@ -23,7 +22,6 @@ platform :android do
     gradle(task: "clean")
     gradle(
       task: 'assemble',
-      flavor: 'Prod',
       build_type: 'Prod'
     )
     if options[:upload_store]

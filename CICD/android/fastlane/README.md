@@ -30,7 +30,7 @@ Deploy beta app to Google Play
 ```
 fastlane android prod
 ```
-Deploy beta app to Google Play
+Deploy prod app to Google Play
 
 ----
 
