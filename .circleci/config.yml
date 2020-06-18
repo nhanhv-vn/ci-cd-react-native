@@ -96,10 +96,10 @@ aliases:
 
       if [[ $CIRCLE_BRANCH == "beta" ]]; then
         bundle exec fastlane beta upload_store:false
-        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/beta/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
+        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
       elif [[ $CIRCLE_BRANCH == "master" ]]; then
         bundle exec fastlane prod upload_store:false
-        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/prod/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
+        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
       fi
   - &decode-keys-android
     name: Decode the keystore files
@@ -108,7 +108,7 @@ aliases:
         cd CICD/android/app && echo $ENCODED_KEYSTORE_BETA | sed 's/ /\n/g' | base64 --decode >> release.keystore
       fi
       if [[ $CIRCLE_BRANCH == "master" ]]; then
-        cd CICD/android/app && echo $PRODUCT_KEYSTORE | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
+        cd CICD/android/app && echo $ENCODED_PRODUCT_KEYSTORE | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
       fi
 
 version: 2
