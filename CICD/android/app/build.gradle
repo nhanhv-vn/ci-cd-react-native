@@ -157,10 +157,10 @@ android {
             keyPassword BETA_STORE_KEY_PASSWORD
         }
         prod {
-            storeFile file(BETA_STORE_FILE)
-            storePassword BETA_STORE_PASSWORD
-            keyAlias BETA_STORE_KEY_ALIAS
-            keyPassword BETA_STORE_KEY_PASSWORD
+            storeFile file(PROD_STORE_FILE)
+            storePassword PROD_STORE_PASSWORD
+            keyAlias PROD_STORE_KEY_ALIAS
+            keyPassword PROD_STORE_KEY_PASSWORD
         }
     }
     buildTypes {
