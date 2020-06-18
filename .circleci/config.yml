@@ -105,7 +105,7 @@ aliases:
     name: Decode the keystore files
     command: |
       if [[ $CIRCLE_BRANCH == "beta" ]]; then
-        cd CICD/android/app && echo $ENCODED_KEYSTORE_BETA | sed 's/ /\n/g' | base64 --decode >> release.keystore
+        cd CICD/android/app && echo $ENCODED_KEYSTORE_BETA | sed 's/ /\n/g' | base64 --decode >> beta.keystore
       fi
       if [[ $CIRCLE_BRANCH == "master" ]]; then
         cd CICD/android/app && echo $ENCODED_PRODUCT_KEYSTORE | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
