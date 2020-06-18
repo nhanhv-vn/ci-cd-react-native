@@ -167,7 +167,7 @@ android {
         debug {
             signingConfig signingConfigs.debug
         }
-        release {
+        beta {
             signingConfig signingConfigs.beta
         }
         prod {
