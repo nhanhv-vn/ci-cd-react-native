@@ -157,10 +157,10 @@ jobs:
           command: |
             cd CICD/android
             if [[ $CIRCLE_BRANCH == "beta" ]]; then
-              bundle exec fastlane beta upload_play_store:false
+              bundle exec fastlane beta upload_store:false
               aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/beta/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
             elif [[ $CIRCLE_BRANCH == "master" ]]; then
-              bundle exec fastlane prod upload_play_store:false
+              bundle exec fastlane prod upload_store:false
               aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/prod/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
             fi
 workflows:

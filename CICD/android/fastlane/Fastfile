@@ -7,21 +7,27 @@ platform :android do
   end
 
   desc "Deploy beta app to Google Play"
-  lane :beta do
+  lane :beta do |options|
     gradle(task: "clean")
     gradle(
       task: 'assemble',
+      flavor: 'Beta',
       build_type: 'Beta'
     )
-    upload_to_play_store
+    if options[:upload_store]
+      upload_to_play_store
+    end
   end
   desc "Deploy prod app to Google Play"
-  lane :prod do
+  lane :prod do |options|
     gradle(task: "clean")
     gradle(
       task: 'assemble',
+      flavor: 'Prod',
       build_type: 'Prod'
     )
-    upload_to_play_store
+    if options[:upload_store]
+      upload_to_play_store
+    end
   end
 end

@@ -151,16 +151,16 @@ android {
             keyPassword 'android'
         }
         beta {
-            storeFile file('release.keystore')
-            storePassword 'abcABC@123'
-            keyAlias 'release'
-            keyPassword 'abcABC@123'
+            storeFile file(BETA_STORE_FILE)
+            storePassword BETA_STORE_PASSWORD
+            keyAlias BETA_STORE_KEY_ALIAS
+            keyPassword BETA_STORE_KEY_PASSWORD
         }
         prod {
-            storeFile file('release-product.keystore')
-            storePassword 'abcABC@123'
-            keyAlias 'prod'
-            keyPassword 'abcABC@123'
+            storeFile file(BETA_STORE_FILE)
+            storePassword BETA_STORE_PASSWORD
+            keyAlias BETA_STORE_KEY_ALIAS
+            keyPassword BETA_STORE_KEY_PASSWORD
         }
     }
     buildTypes {
