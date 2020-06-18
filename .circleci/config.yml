@@ -82,6 +82,7 @@ aliases:
     command: |
       cd CICD
       npm version patch
+
   - &install-awscli
     name: Install awscli
     command: sudo pip install awscli
@@ -170,7 +171,7 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build:s
+      - build:
           filters:
             branches: *branches
       - android:
