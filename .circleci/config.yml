@@ -96,10 +96,10 @@ aliases:
 
       if [[ $CIRCLE_BRANCH == "beta" ]]; then
         bundle exec fastlane beta upload_store:false
-        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd-beta.apk"
+        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
       elif [[ $CIRCLE_BRANCH == "master" ]]; then
         bundle exec fastlane prod upload_store:false
-        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd-prod.apk"
+        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
       fi
   - &decode-keys-android
     name: Decode the keystore files
