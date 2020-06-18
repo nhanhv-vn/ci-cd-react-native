@@ -82,6 +82,33 @@ aliases:
     command: |
       cd CICD
       npm version patch
+  - &install-awscli
+    name: Install awscli
+    command: sudo pip install awscli
+
+  - &build-apk-upload-upload_store
+    name: Build apk & upload
+    command: |
+      cd CICD/android
+      export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
+      if [[ $CIRCLE_BRANCH == "beta" ]]; then
+        bundle exec fastlane beta upload_store:false
+        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/beta/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
+      elif [[ $CIRCLE_BRANCH == "master" ]]; then
+        bundle exec fastlane prod upload_store:false
+        aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/prod/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
+      fi
+  - &decode-keys-android
+    name: Decode the keystore files
+    command: |
+      if [[ $CIRCLE_BRANCH == "beta" ]]; then
+        cd CICD/android/app && echo $ENCODED_KEYSTORE_BETA | sed 's/ /\n/g' | base64 --decode >> release.keystore
+      fi
+      if [[ $CIRCLE_BRANCH == "master" ]]; then
+        cd CICD/android/app && echo $PRODUCT_KEYSTORE | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
+      fi
 
 version: 2
 
@@ -123,51 +150,27 @@ jobs:
 
     steps:
       - checkout
-
       - restore-cache: *restore-yarn-cache
       - run: *yarn
       - save-cache: *save-yarn-cache
-
       - restore-cache: *restore-gem-android
       - save-cache: *save-gem-android
-
       - run: *install-fastlane-android
-
       - run: *version-patch
-
       - run: *test
-
       - run:
           name: Approve license for build tools
           command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
-      - run:
-          name: Decode the keystore files
-          command: |
-            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-            if [[ $CIRCLE_BRANCH == "beta" ]]; then
-              cd CICD/android/app && echo $ENCODED_KEYSTORE_BETA | sed 's/ /\n/g' | base64 --decode >> release.keystore
-            fi
-            if [[ $CIRCLE_BRANCH == "master" ]]; then
-              cd CICD/android/app && echo $PRODUCT_KEYSTORE | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
-            fi
-      - run:
-          name: Build apk
-          command: |
-            cd CICD/android
-            if [[ $CIRCLE_BRANCH == "beta" ]]; then
-              bundle exec fastlane beta upload_store:false
-              aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/beta/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
-            elif [[ $CIRCLE_BRANCH == "master" ]]; then
-              bundle exec fastlane prod upload_store:false
-              aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME_EXTERNAL}/prod/$(date +'%y')-$(date +'%m')-$(date +'%d')/cicd.apk"
-            fi
+      - run: *decode-keys-android
+      - run: *install-awscli
+      - run: *build-apk-upload-upload_store
+
 workflows:
   version: 2
   deploy:
     jobs:
-      - build:
+      - build:s
           filters:
             branches: *branches
       - android:
