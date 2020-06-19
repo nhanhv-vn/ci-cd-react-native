@@ -8,18 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* CICDTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CICDTests.m */; };
-		0485DD4939A72A2E68BDFD56 /* libPods-CICD-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8FEFE23A419BD237EA1A9A7 /* libPods-CICD-tvOS.a */; };
-		068BE324E77F614631C7F26F /* libPods-CICD-CICDTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3394C0AD606BBC4DC50A1F79 /* libPods-CICD-CICDTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1B3605C82FB481B2A8AD3464 /* libPods-CICD-CICDTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B51688D718F32425934B49 /* libPods-CICD-CICDTests.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* CICDTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CICDTests.m */; };
-		84C45978144625F16CACFF84 /* libPods-CICD-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9EB1060C28C1C543ABFA6C2 /* libPods-CICD-tvOSTests.a */; };
-		F1CA7018BBB261F14E18CD55 /* libPods-CICD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E943D24EB886981BF905A428 /* libPods-CICD.a */; };
+		39E658FC5E0BB62710E2F7D0 /* libPods-CICD-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAF505368CCB28B31DCE1DD /* libPods-CICD-tvOSTests.a */; };
+		6F5412BEB147D9E4A27E1573 /* libPods-CICD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C13D0D25AF8D1D7164C9C6C /* libPods-CICD.a */; };
+		FDF4E7FC270073FDA54F47F7 /* libPods-CICD-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67BCAE2BAA4645DC74C26DFF /* libPods-CICD-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,9 +41,12 @@
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		00B51688D718F32425934B49 /* libPods-CICD-CICDTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD-CICDTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356EE1AD99517003FC87E /* CICDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CICDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* CICDTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CICDTests.m; sourceTree = "<group>"; };
+		03699BB204C99E9A13CA678E /* Pods-CICDTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICDTests.release.xcconfig"; path = "Target Support Files/Pods-CICDTests/Pods-CICDTests.release.xcconfig"; sourceTree = "<group>"; };
+		0C13D0D25AF8D1D7164C9C6C /* libPods-CICD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* CICD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CICD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CICD/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = CICD/AppDelegate.m; sourceTree = "<group>"; };
@@ -54,19 +57,18 @@
 		2C3A38447E348ABA860A0F42 /* Pods-CICD-CICDTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD-CICDTests.release.xcconfig"; path = "Target Support Files/Pods-CICD-CICDTests/Pods-CICD-CICDTests.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* CICD-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CICD-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* CICD-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CICD-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3394C0AD606BBC4DC50A1F79 /* libPods-CICD-CICDTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD-CICDTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F089ED6257E4520556D1FEF /* Pods-CICD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD.release.xcconfig"; path = "Target Support Files/Pods-CICD/Pods-CICD.release.xcconfig"; sourceTree = "<group>"; };
+		41883EC989CF1BE0C4A60488 /* Pods-CICDTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICDTests.debug.xcconfig"; path = "Target Support Files/Pods-CICDTests/Pods-CICDTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4FA07EDD17A31F43A13C5BAE /* Pods-CICD-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CICD-tvOSTests/Pods-CICD-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		5CAF505368CCB28B31DCE1DD /* libPods-CICD-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67BCAE2BAA4645DC74C26DFF /* libPods-CICD-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CC71DA97C04639174CEAC2D /* Pods-CICD.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD.debug.xcconfig"; path = "Target Support Files/Pods-CICD/Pods-CICD.debug.xcconfig"; sourceTree = "<group>"; };
 		6D0CEE39D0228FC5A5509655 /* Pods-CICD-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-CICD-tvOSTests/Pods-CICD-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A71FBD747788763952A34977 /* Pods-CICD-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CICD-tvOS/Pods-CICD-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		CCA415FB8E79557AC179254C /* Pods-CICD-CICDTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD-CICDTests.debug.xcconfig"; path = "Target Support Files/Pods-CICD-CICDTests/Pods-CICD-CICDTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DB79AB386B5A24A0F7D9B14D /* Pods-CICD-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CICD-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-CICD-tvOS/Pods-CICD-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		E943D24EB886981BF905A428 /* libPods-CICD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F8FEFE23A419BD237EA1A9A7 /* libPods-CICD-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F9EB1060C28C1C543ABFA6C2 /* libPods-CICD-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CICD-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				068BE324E77F614631C7F26F /* libPods-CICD-CICDTests.a in Frameworks */,
+				1B3605C82FB481B2A8AD3464 /* libPods-CICD-CICDTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1CA7018BBB261F14E18CD55 /* libPods-CICD.a in Frameworks */,
+				6F5412BEB147D9E4A27E1573 /* libPods-CICD.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0485DD4939A72A2E68BDFD56 /* libPods-CICD-tvOS.a in Frameworks */,
+				FDF4E7FC270073FDA54F47F7 /* libPods-CICD-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84C45978144625F16CACFF84 /* libPods-CICD-tvOSTests.a in Frameworks */,
+				39E658FC5E0BB62710E2F7D0 /* libPods-CICD-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,10 +143,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				E943D24EB886981BF905A428 /* libPods-CICD.a */,
-				3394C0AD606BBC4DC50A1F79 /* libPods-CICD-CICDTests.a */,
-				F8FEFE23A419BD237EA1A9A7 /* libPods-CICD-tvOS.a */,
-				F9EB1060C28C1C543ABFA6C2 /* libPods-CICD-tvOSTests.a */,
+				0C13D0D25AF8D1D7164C9C6C /* libPods-CICD.a */,
+				00B51688D718F32425934B49 /* libPods-CICD-CICDTests.a */,
+				67BCAE2BAA4645DC74C26DFF /* libPods-CICD-tvOS.a */,
+				5CAF505368CCB28B31DCE1DD /* libPods-CICD-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -160,8 +162,9 @@
 				A71FBD747788763952A34977 /* Pods-CICD-tvOS.release.xcconfig */,
 				6D0CEE39D0228FC5A5509655 /* Pods-CICD-tvOSTests.debug.xcconfig */,
 				4FA07EDD17A31F43A13C5BAE /* Pods-CICD-tvOSTests.release.xcconfig */,
+				41883EC989CF1BE0C4A60488 /* Pods-CICDTests.debug.xcconfig */,
+				03699BB204C99E9A13CA678E /* Pods-CICDTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -292,6 +295,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 6FFCDBKJ55;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -630,6 +634,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6FFCDBKJ55;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -657,6 +662,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6FFCDBKJ55;
 				INFOPLIST_FILE = CICD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
