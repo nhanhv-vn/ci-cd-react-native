@@ -110,6 +110,10 @@ aliases:
       if [[ $CIRCLE_BRANCH == "master" ]]; then
         cd CICD/android/app && echo $ENCODED_KEYSTORE_PROD | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
       fi
+  - &decode-google-service
+    name: Decode the google services files
+    command: |
+      cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
 
 version: 2
 
@@ -163,6 +167,7 @@ jobs:
           name: Approve license for build tools
           command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
+      - run: *decode-google-service
       - run: *decode-keys-android
       - run: *install-awscli
       - run: *build-apk-upload-upload_store

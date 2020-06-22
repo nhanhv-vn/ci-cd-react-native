@@ -10,4 +10,5 @@
 
 # sdk("iphoneos9.0")
 
-output_directory("./")
+output_directory("./build")
+output_name("CICD")
