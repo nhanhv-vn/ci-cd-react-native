@@ -14,7 +14,9 @@ platform :android do
       build_type: 'Beta'
     )
     if options[:upload_store]
-      upload_to_play_store
+      supply(
+        track: 'beta'
+      )
     end
   end
   desc "Deploy prod app to Google Play"
