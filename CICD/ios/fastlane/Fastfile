@@ -21,7 +21,7 @@ platform :ios do
     gym(
       scheme: "CICD",
       clean: true,
-      skip_profile_detection: true
+      workspace: 'CICD.xcworkspace'
     )
   end
 end
