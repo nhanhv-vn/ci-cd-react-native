@@ -1,6 +1,13 @@
 default_platform(:android)
 
 platform :android do
+  lane :rename do 
+    rename_android_package(                                                                                                                                                                                                                                                              
+      path: "./",                                                                                                                                                                                                                                                                        
+      package_name: "com.cicd",                                                                                                                                                                                                                                        
+      new_package_name: "com.cicd.nhanhuynh.app"                                                                                                                                                                                                                                  
+    )
+  end
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
