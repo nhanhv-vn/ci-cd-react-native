@@ -21,6 +21,13 @@ or alternatively using `brew cask install fastlane`
 fastlane ios deploy
 ```
 Deploy ios app
+=======
+### ios beta
+```
+fastlane ios beta
+```
+Description of what the lane does
+>>>>>>> beta
 
 ----
 

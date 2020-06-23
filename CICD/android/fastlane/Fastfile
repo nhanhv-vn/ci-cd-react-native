@@ -1,6 +1,13 @@
 default_platform(:android)
 
 platform :android do
+  lane :rename do 
+    rename_android_package(                                                                                                                                                                                                                                                              
+      path: "./",                                                                                                                                                                                                                                                                        
+      package_name: "com.cicd",                                                                                                                                                                                                                                        
+      new_package_name: "com.cicd.nhanhuynh.app"                                                                                                                                                                                                                                  
+    )
+  end
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
@@ -14,7 +21,15 @@ platform :android do
       build_type: 'Beta'
     )
     if options[:upload_store]
-      upload_to_play_store
+      supply(
+        track: 'beta',
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        version_code: 1,
+        release_status: 'draft',
+        skip_upload_screenshots: true,
+        timeout: 600
+      )
     end
   end
   desc "Deploy prod app to Google Play"
@@ -25,7 +40,15 @@ platform :android do
       build_type: 'Prod'
     )
     if options[:upload_store]
-      upload_to_play_store
+      supply(
+        track: 'production',
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        version_code: 1,
+        skip_upload_screenshots: true,
+        release_status: 'draft',
+        timeout: 600
+      )
     end
   end
 end

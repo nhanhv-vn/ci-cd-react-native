@@ -95,10 +95,10 @@ aliases:
       export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
       if [[ $CIRCLE_BRANCH == "beta" ]]; then
-        bundle exec fastlane beta upload_store:false
+        bundle exec fastlane beta upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
       elif [[ $CIRCLE_BRANCH == "master" ]]; then
-        bundle exec fastlane prod upload_store:false
+        bundle exec fastlane prod upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
       fi
   - &decode-keys-android
@@ -110,6 +110,12 @@ aliases:
       if [[ $CIRCLE_BRANCH == "master" ]]; then
         cd CICD/android/app && echo $ENCODED_KEYSTORE_PROD | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
       fi
+      
+  - &decode-google-service
+    name: Decode the google services file
+    command: |
+      cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
+      ls -a
 
 version: 2
 
@@ -165,6 +171,7 @@ jobs:
 
       - run: *decode-keys-android
       - run: *install-awscli
+      - run: *decode-google-service
       - run: *build-apk-upload-upload_store
 
 workflows:

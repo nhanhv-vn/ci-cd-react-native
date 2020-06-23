@@ -16,8 +16,12 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Deploy ios app"
-  lane :deploy do
-    build_app(workspace: "CICD.xcworkspace", scheme: "CICD")
+  desc "Description of what the lane does"
+  lane :beta do
+    gym(
+      scheme: "CICD",
+      clean: true,
+      workspace: 'CICD.xcworkspace'
+    )
   end
 end
