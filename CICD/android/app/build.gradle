@@ -138,7 +138,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.cicd.nhanhuynh.app"
+        applicationId APPLICATION_ID
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode genVersionCode()
@@ -178,15 +178,9 @@ android {
         }
         beta {
             signingConfig signingConfigs.beta
-            defaultConfig {
-                applicationId BETA_APPLICATION_ID // Custom  applicationId
-            }
         }
         prod {
             signingConfig signingConfigs.prod
-            defaultConfig {
-                applicationId PROD_APPLICATION_ID // Custom  applicationId
-            }
         }
     }
 

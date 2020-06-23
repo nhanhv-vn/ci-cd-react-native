@@ -95,9 +95,11 @@ aliases:
       export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
       if [[ $CIRCLE_BRANCH == "beta" ]]; then
+        echo "APPLICATION_ID=com.cicd.nhanhuynh.app" &>> gradle.properties
         bundle exec fastlane beta upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
       elif [[ $CIRCLE_BRANCH == "master" ]]; then
+        echo "APPLICATION_ID=com.cicd.app.pro" &>> gradle.properties
         bundle exec fastlane prod upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
       fi
