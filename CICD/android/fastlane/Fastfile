@@ -20,6 +20,7 @@ platform :android do
         skip_upload_images: true,
         release_status: 'draft',
         skip_upload_screenshots: true,
+        package_name: 'com.cicd.nhanhuynh.app'
       )
     end
   end
@@ -36,7 +37,8 @@ platform :android do
         skip_upload_metadata: true,
         skip_upload_images: true,
         skip_upload_screenshots: true,
-        release_status: 'draft'
+        release_status: 'draft',
+        package_name: 'com.cicd.nhanhuynh.app'
       )
     end
   end

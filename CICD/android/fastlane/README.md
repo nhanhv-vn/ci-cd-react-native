@@ -16,16 +16,6 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## Android
-### android rename
-```
-fastlane android rename
-```
-
-### android rename_beta
-```
-fastlane android rename_beta
-```
-
 ### android test
 ```
 fastlane android test

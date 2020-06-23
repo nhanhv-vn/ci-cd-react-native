@@ -95,7 +95,6 @@ aliases:
       export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
       if [[ $CIRCLE_BRANCH == "beta" ]]; then
-        bundle exec fastlane install_plugins
         bundle exec fastlane beta upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
       elif [[ $CIRCLE_BRANCH == "master" ]]; then
