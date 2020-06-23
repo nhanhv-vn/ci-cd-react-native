@@ -98,9 +98,9 @@ aliases:
         bundle exec fastlane beta upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/beta/app-beta.apk "s3://${AWS_S3_BUCKET_NAME}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
       elif [[ $CIRCLE_BRANCH == "master" ]]; then
-        find .//app/src -name '*.java' -type f -exec sed -i '' "s/com.cicd.nhanhuynh.app/com.cicd.app.pro/" '{}' \;
-        find .//app/src -name 'AndroidManifest.xml' -type f -exec sed -i '' "s/com.cicd.nhanhuynh.app/com.cicd.app.pro/" '{}' \;
-        find .//app -name 'build.gradle' -type f -exec sed -i '' "s/com.cicd.nhanhuynh.app/com.cicd.app.pro/" '{}' \;
+        find .//app/src -name '*.java' -type f -exec sed "s/com.cicd.nhanhuynh.app/com.cicd.app.pro/" '{}' \;
+        find .//app/src -name 'AndroidManifest.xml' -type f -exec sed "s/com.cicd.nhanhuynh.app/com.cicd.app.pro/" '{}' \;
+        find .//app -name 'build.gradle' -type f -exec sed -i "s/com.cicd.nhanhuynh.app/com.cicd.app.pro/" '{}' \;
         bundle exec fastlane prod upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
       fi
