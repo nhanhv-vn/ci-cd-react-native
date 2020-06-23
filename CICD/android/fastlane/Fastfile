@@ -6,14 +6,6 @@ platform :android do
     gradle(task: "test")
   end
 
-  lane :rename do 
-    rename_android_package(                                                                                                                                                                                                                                                              
-      path: "./",                                                                                                                                                                                                                                                                        
-      package_name: "com.cicd.nhanhuynh.app",                                                                                                                                                                                                                                        
-      new_package_name: "com.cicd.app.pro"                                                                                                                                                                                                                                  
-    )
-  end
-  
   desc "Deploy beta app to Google Play"
   lane :beta do |options|
     gradle(task: "clean")
@@ -35,7 +27,6 @@ platform :android do
   desc "Deploy prod app to Google Play"
   lane :prod do |options|
     gradle(task: "clean")
-    rename
     gradle(
       task: 'assemble',
       build_type: 'Prod'
