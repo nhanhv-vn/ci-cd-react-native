@@ -35,7 +35,8 @@ platform :android do
         skip_upload_images: true,
         version_code: 1,
         release_status: 'draft',
-        skip_upload_screenshots: true
+        skip_upload_screenshots: true,
+        package_name: 'com.cicd.nhanhuynh.app.beta'
       )
     end
   end
@@ -54,7 +55,8 @@ platform :android do
         skip_upload_images: true,
         version_code: 1,
         skip_upload_screenshots: true,
-        release_status: 'draft'
+        release_status: 'draft',
+        package_name: 'com.cicd.nhanhuynh.app'
       )
     end
   end
