@@ -22,8 +22,8 @@ platform :android do
 
   desc "Deploy beta app to Google Play"
   lane :beta do |options|
-    gradle(task: "clean")
     rename_beta
+    gradle(task: "clean")
     gradle(
       task: 'assemble',
       build_type: 'Beta'
@@ -41,8 +41,8 @@ platform :android do
   end
   desc "Deploy prod app to Google Play"
   lane :prod do |options|
-    gradle(task: "clean")
     rename
+    gradle(task: "clean")
     gradle(
       task: 'assemble',
       build_type: 'Prod'
