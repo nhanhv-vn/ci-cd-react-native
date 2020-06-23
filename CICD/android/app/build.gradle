@@ -120,6 +120,15 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
 
+static def buildTime() {
+    def date = new Date()
+    def formattedDate = date.format('yyMMddHHmm')
+    return formattedDate
+}
+static def genVersionCode() {
+    return Integer.parseInt(buildTime())
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -132,7 +141,7 @@ android {
         applicationId "com.cicd"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode genVersionCode()
         versionName "1.0"
     }
     splits {
