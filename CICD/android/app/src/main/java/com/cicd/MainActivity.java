@@ -1,4 +1,4 @@
-package com.cicd.nhanhuynh.app;
+package com.cicd;
 
 import com.facebook.react.ReactActivity;
 

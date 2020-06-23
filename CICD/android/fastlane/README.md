@@ -21,6 +21,11 @@ or alternatively using `brew cask install fastlane`
 fastlane android rename
 ```
 
+### android rename_beta
+```
+fastlane android rename_beta
+```
+
 ### android test
 ```
 fastlane android test
