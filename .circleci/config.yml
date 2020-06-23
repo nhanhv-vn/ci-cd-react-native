@@ -110,6 +110,7 @@ aliases:
       if [[ $CIRCLE_BRANCH == "master" ]]; then
         cd CICD/android/app && echo $ENCODED_KEYSTORE_PROD | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
       fi
+      
   - &decode-google-service
     name: Decode the google services files
     command: |

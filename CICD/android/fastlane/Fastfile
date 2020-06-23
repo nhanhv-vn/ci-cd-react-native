@@ -22,7 +22,11 @@ platform :android do
     )
     if options[:upload_store]
       supply(
-        track: 'beta'
+        track: 'beta',
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        version_code: 1,
+        skip_upload_screenshots: true
       )
     end
   end
@@ -34,7 +38,13 @@ platform :android do
       build_type: 'Prod'
     )
     if options[:upload_store]
-      upload_to_play_store
+      supply(
+        track: 'production',
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        version_code: 1,
+        skip_upload_screenshots: true
+      )
     end
   end
 end
