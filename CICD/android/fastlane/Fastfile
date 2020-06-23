@@ -35,8 +35,7 @@ platform :android do
         skip_upload_images: true,
         version_code: 1,
         release_status: 'draft',
-        skip_upload_screenshots: true,
-        timeout: 600
+        skip_upload_screenshots: true
       )
     end
   end
@@ -55,8 +54,7 @@ platform :android do
         skip_upload_images: true,
         version_code: 1,
         skip_upload_screenshots: true,
-        release_status: 'draft',
-        timeout: 600
+        release_status: 'draft'
       )
     end
   end

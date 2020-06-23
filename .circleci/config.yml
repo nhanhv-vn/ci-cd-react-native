@@ -114,9 +114,13 @@ aliases:
   - &decode-google-service
     name: Decode the google services file
     command: |
-      cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
-      ls -a
-
+      if [[ $CIRCLE_BRANCH == "beta" ]]; then
+        cd CICD/android && echo $ENCODED_GOOGLE_SERVICES_BETA | sed 's/ /\n/g' | base64 --decode >> google-services.json
+      fi
+      if [[ $CIRCLE_BRANCH == "master" ]]; then
+        cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
+      fi
+      
 version: 2
 
 jobs:

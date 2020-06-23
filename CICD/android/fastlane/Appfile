@@ -1,2 +1,1 @@
 json_key_file("./google-services.json")
-package_name("com.cicd.nhanhuynh.app")
