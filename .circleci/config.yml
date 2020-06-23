@@ -112,9 +112,10 @@ aliases:
       fi
       
   - &decode-google-service
-    name: Decode the google services files
+    name: Decode the google services file
     command: |
       cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
+      ls -a
 
 version: 2
 
