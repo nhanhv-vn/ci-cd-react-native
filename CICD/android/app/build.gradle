@@ -178,11 +178,14 @@ android {
         }
         beta {
             signingConfig signingConfigs.beta
+            defaultConfig {
+                applicationId BETA_APPLICATION_ID // Custom  applicationId
+            }
         }
         prod {
             signingConfig signingConfigs.prod
             defaultConfig {
-                applicationId "com.cicd.app.pro" // Custom  applicationId
+                applicationId PROD_APPLICATION_ID // Custom  applicationId
             }
         }
     }
