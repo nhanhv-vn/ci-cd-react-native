@@ -1,20 +1,6 @@
 default_platform(:android)
 
 platform :android do
-  lane :rename do 
-    rename_android_package(                                                                                                                                                                                                                                                              
-      path: "./",                                                                                                                                                                                                                                                                        
-      package_name: "com.cicd",                                                                                                                                                                                                                                        
-      new_package_name: "com.cicd.nhanhuynh.app"                                                                                                                                                                                                                                  
-    )
-  end
-  lane :rename_beta do 
-    rename_android_package(                                                                                                                                                                                                                                                              
-      path: "./",                                                                                                                                                                                                                                                                        
-      package_name: "com.cicd",                                                                                                                                                                                                                                        
-      new_package_name: "com.cicd.nhanhuynh.app.beta"                                                                                                                                                                                                                                  
-    )
-  end
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
@@ -22,7 +8,6 @@ platform :android do
 
   desc "Deploy beta app to Google Play"
   lane :beta do |options|
-    rename_beta
     gradle(task: "clean")
     gradle(
       task: 'assemble',
@@ -35,13 +20,11 @@ platform :android do
         skip_upload_images: true,
         release_status: 'draft',
         skip_upload_screenshots: true,
-        package_name: 'com.cicd.nhanhuynh.app.beta'
       )
     end
   end
   desc "Deploy prod app to Google Play"
   lane :prod do |options|
-    rename
     gradle(task: "clean")
     gradle(
       task: 'assemble',
@@ -53,8 +36,7 @@ platform :android do
         skip_upload_metadata: true,
         skip_upload_images: true,
         skip_upload_screenshots: true,
-        release_status: 'draft',
-        package_name: 'com.cicd.nhanhuynh.app'
+        release_status: 'draft'
       )
     end
   end
