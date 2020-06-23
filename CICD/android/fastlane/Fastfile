@@ -6,6 +6,14 @@ platform :android do
     gradle(task: "test")
   end
 
+  lane :rename do 
+    rename_android_package(                                                                                                                                                                                                                                                              
+      path: "./",                                                                                                                                                                                                                                                                        
+      package_name: "com.cicd.nhanhuynh.app",                                                                                                                                                                                                                                        
+      new_package_name: "com.cicd.app.pro"                                                                                                                                                                                                                                  
+    )
+  end
+  
   desc "Deploy beta app to Google Play"
   lane :beta do |options|
     gradle(task: "clean")
@@ -27,6 +35,7 @@ platform :android do
   desc "Deploy prod app to Google Play"
   lane :prod do |options|
     gradle(task: "clean")
+    rename
     gradle(
       task: 'assemble',
       build_type: 'Prod'
@@ -38,7 +47,7 @@ platform :android do
         skip_upload_images: true,
         skip_upload_screenshots: true,
         release_status: 'draft',
-        package_name: 'com.cicd.nhanhuynh.app'
+        package_name: 'com.cicd.app.pro'
       )
     end
   end
