@@ -168,9 +168,9 @@ jobs:
           name: Approve license for build tools
           command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
-      - run: *decode-google-service
       - run: *decode-keys-android
       - run: *install-awscli
+      - run: *decode-google-service
       - run: *build-apk-upload-upload_store
 
 workflows:
