@@ -281,8 +281,9 @@ workflows:
             - build
           filters:
             branches: *branches
-      - ios:
-          requires:
-            - build
-          filters:
-            branches: *branches
+      # Can't run build IOS with Free account
+      # - ios:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches: *branches
