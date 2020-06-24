@@ -78,7 +78,7 @@ aliases:
 
     # Jest CLI Options: https://jestjs.io/docs/en/cli.html
   - &version-patch
-    name: version patch
+    name: Version patch
     command: |
       cd CICD
       npm version patch
@@ -103,6 +103,7 @@ aliases:
         bundle exec fastlane prod upload_store:true
         aws s3 cp ~/CICD/CICD/android/app/build/outputs/apk/prod/app-prod.apk "s3://${AWS_S3_BUCKET_NAME}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
       fi
+
   - &decode-keys-android
     name: Decode the keystore files
     command: |
@@ -123,6 +124,10 @@ aliases:
         cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
       fi
       
+  - &license-build-tools
+    name: Approve license for build tools
+    command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+      
 version: 2
 
 jobs:
@@ -142,7 +147,7 @@ jobs:
           root: ~/CICD
           paths:
             - .
-
+            
   test:
     working_directory: ~/CICD/
     docker:
@@ -171,10 +176,7 @@ jobs:
       - run: *install-fastlane-android
       - run: *version-patch
       - run: *test
-      - run:
-          name: Approve license for build tools
-          command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-
+      - run: *license-build-tools
       - run: *decode-keys-android
       - run: *install-awscli
       - run: *decode-google-service
