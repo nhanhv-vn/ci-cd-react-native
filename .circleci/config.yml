@@ -29,11 +29,46 @@ aliases:
       - gem-android-cache-v1-{{ arch }}-{{ .Branch }}-
       # Fallback in case this is a first-time run on a fork
       - gem-android-cache-v1-{{ arch }}-master-
+  - &restore-gem-ios
+    keys:
+      - gem-ios-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Gemfile.lock" }}
+      # Fallback in case checksum fails
+      - gem-ios-{{ arch }}-{{ .Branch }}-
+      # Fallback in case this is a first-time run on a fork
+      - gem-ios-{{ arch }}-master-
 
   - &save-gem-android
     paths:
       - CICD/android/vendor/bundle
     key: gem-android-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/android/Gemfile.lock" }}
+  
+  - &save-gem-ios
+    paths:
+      - CICD/ios/vendor/bundle
+    key: gem-ios-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Gemfile.lock" }}
+  
+  - &install-cocoapods
+    name: Install CocoaPods
+    command: |
+      cd CICD/ios
+      pod --version
+      curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      rm -rf Pods && pod install
+      chmod u+x tools/strip_unused_archs.sh
+  
+  - &restore-cocoapods
+    keys:
+      - cocoapods-ios-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Podfile.lock" }}
+      # Fallback in case checksum fails
+      - cocoapods-ios-{{ arch }}-{{ .Branch }}-
+      # Fallback in case this is a first-time run on a fork
+      - cocoapods-ios-{{ arch }}-master-
+
+  - &save-cocoapods 
+    paths:
+      - ~/.cocoapods
+      - CICD/ios/Pods
+    key: cocoapods-ios-{{ arch }}-{{ .Branch }}-{{ checksum "CICD/ios/Podfile.lock" }}
 
   # Select branch to build
   - &branches
@@ -62,6 +97,22 @@ aliases:
       cd CICD/android
       bundle update
       gem install json
+      bundle install --path vendor/bundle
+  
+  - &install-fastlane-ios
+    name: Install fastlane & bundler
+    command: |
+      brew update
+      brew install ruby
+      brew cask install fastlane
+    no_output_timeout: 30m
+
+  - &install-bundler-ios
+    name: Bundler install
+    command: |
+      cd CICD/ios
+      gem install json
+      bundle update
       bundle install --path vendor/bundle
 
   - &yarn
@@ -123,7 +174,7 @@ aliases:
       if [[ $CIRCLE_BRANCH == "master" ]]; then
         cd CICD/android && echo $ENCODED_GOOGLE_SERVICES | sed 's/ /\n/g' | base64 --decode >> google-services.json
       fi
-      
+
   - &license-build-tools
     name: Approve license for build tools
     command: (echo y; echo y; echo y; echo y; echo y; echo y) | $ANDROID_HOME/tools/bin/sdkmanager --licenses
@@ -138,11 +189,9 @@ jobs:
 
     steps:
       - checkout
-
       - restore-cache: *restore-yarn-cache
       - run: *yarn
       - save-cache: *save-yarn-cache
-
       - persist_to_workspace:
           root: ~/CICD
           paths:
@@ -154,11 +203,9 @@ jobs:
       - image: circleci/node:14.2.0
     steps:
       - checkout
-
       - restore-cache: *restore-yarn-cache
       - run: *yarn
       - save-cache: *save-yarn-cache
-
       - run: *test
 
   android:
@@ -182,6 +229,46 @@ jobs:
       - run: *decode-google-service
       - run: *build-apk-upload-upload_store
 
+  ios:
+    macos:
+      xcode: "10.15.5"
+    working_directory: ~/CICD
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: ${CIRCLE_BRANCH}
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - restore-cache: *restore-gem-ios
+      - run: *install-bundler-ios
+      - save-cache: *save-gem-ios
+      - run: *install-awscli
+      - run: *install-node-version
+      - restore-cache: *restore-yarn-cache
+      - run: *yarn
+      - save-cache: *save-yarn-cache
+      - run: *test
+      - restore-cache: *restore-cocoapods
+      - run: *install-cocoapods
+      - save-cache: *save-cocoapods
+      - restore-cache: *restore-react-native-cli
+      - run: *install-react-native-cli
+      - save-cache: *save-react-native-cli
+      - run: *version-patch
+      - run:
+          name: Create a main.jsbundle
+          command: |
+            cd CICD
+            node ./node_modules/react-native-cli/index.js bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'
+      - run:
+          name: Build and upload ipa to S3 internal
+          command: |
+            python -c "import hashlib;m=hashlib.md5();print(m.hexdigest())"
+            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+            cd CICD/ios
+            bundle exec fastlane
+
 workflows:
   version: 2
   deploy:
@@ -191,6 +278,11 @@ workflows:
             branches: *branches
       - android:
           requires:
+            - build
+          filters:
+            branches: *branches
+      - ios:
+        requires:
             - build
           filters:
             branches: *branches
