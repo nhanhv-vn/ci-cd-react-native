@@ -64,7 +64,7 @@ aliases:
       # Fallback in case this is a first-time run on a fork
       - cocoapods-ios-{{ arch }}-master-
 
-  - &save-cocoapods 
+  - &save-cocoapods
     paths:
       - ~/.cocoapods
       - CICD/ios/Pods
@@ -282,7 +282,7 @@ workflows:
           filters:
             branches: *branches
       - ios:
-        requires:
+          requires:
             - build
           filters:
             branches: *branches
