@@ -7,3 +7,9 @@
 - AWS_SECRET_ACCESS_KEY: Amazon secret keys
 - ENCODED_KEYSTORE_BETA: Keys store for release beta
 - ENCODED_KEYSTORE_PROD: Keys store for release prod
+
+# Reference
+- [Fastlane](https://docs.fastlane.tools/)
+- [Supply](https://docs.fastlane.tools/actions/supply/)
+- [Gym](https://docs.fastlane.tools/actions/gym/)
+- [Circleci](https://circleci.com/)
