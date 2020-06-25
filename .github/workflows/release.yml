@@ -102,4 +102,5 @@ jobs:
           aws s3 cp $(pwd)/app/build/outputs/apk/prod/app-prod.apk "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
         fi
     - name: DONE
+      run: echo "DONE"
         
