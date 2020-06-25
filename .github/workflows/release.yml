@@ -1,107 +1,113 @@
-name: CICD Beta
+name: Build app
 on:
   push:
-    branches: [ feature/github-action-release-beta, feature/github-action-release-prod ]
+    branches:
+      [feature/github-action-release-beta, feature/github-action-release-prod]
   pull_request:
-    branches: [ feature/github-action-release-beta, feature/github-action-release-prod ]
+    branches:
+      [feature/github-action-release-beta, feature/github-action-release-prod]
 
 jobs:
   build:
     name: Build Android
     runs-on: ubuntu-18.04
     steps:
-    
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Set current branch
-      run: export CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
 
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
 
-    - name: Set up Ruby
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6
-     
-    - name: Install node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.2.0'
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.2.0"
 
-    - name: Npm install
-      run: npm install
+      - name: Npm install
+        run: npm install
 
-    - name: Detect npm version
-      run: npm --version 
-    
-    - name: Detect yarn version
-      run: yarn --version 
-      
-    - name: Install react-native-cli
-      run: cd CICD && yarn add react-native-cli
-    
-    - name: Install fastlane
-      run: |
-        cd CICD/android
-        gem install bundler
-        bundle update
-        gem install json
-        bundle install --path vendor/bundle
-        
-    - name: Install Node Dependencies
-      run: |
-        rm -rf node_modules
-        rm -rf ~/.rncache
-        cd CICD && yarn cache clean && yarn install
-        
-    - name: Run unit test
-      run: |
-        cd CICD && yarn test --coverage
-        
-    - name: Install awscli
-      run: sudo pip install awscli
-      
-      # Ref: https://github.com/actions/virtual-environments/pull/539
-    - name: Install sdkmanager
-      run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
-    
-    - name: Decode the keystore files
-      run: |
-        cd CICD/android/app
-        if [[ $CURRENT_BRANCH == "feature/github-action-release-beta" ]]; then
+      - name: Detect npm version
+        run: npm --version
+
+      - name: Detect yarn version
+        run: yarn --version
+
+      - name: Install react-native-cli
+        run: cd CICD && yarn add react-native-cli
+
+      - name: Install fastlane
+        run: |
+          cd CICD/android
+          gem install bundler
+          bundle update
+          gem install json
+          bundle install --path vendor/bundle
+
+      - name: Install Node Dependencies
+        run: |
+          rm -rf node_modules
+          rm -rf ~/.rncache
+          cd CICD && yarn cache clean && yarn install
+
+      - name: Run unit test
+        run: |
+          cd CICD && yarn test --coverage
+
+      - name: Install awscli
+        run: sudo pip install awscli
+
+        # Ref: https://github.com/actions/virtual-environments/pull/539
+      - name: Install sdkmanager
+        run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
+
+      - name: Decode the keystore bate
+        if: github.ref == 'refs/heads/feature/github-action-release-beta'
+        run: |
+          echo "Beta"
+          cd CICD/android/app
           echo ${{ secrets.ENCODED_KEYSTORE_BETA }} | sed 's/ /\n/g' | base64 --decode >> beta.keystore
-        fi
-        if [[ $CURRENT_BRANCH == "feature/github-action-release-prod" ]]; then
+
+      - name: Decode the keystore prod
+        if: github.ref == 'refs/heads/feature/github-action-release-prod'
+        run: |
+          cd CICD/android/app
           echo ${{ secrets.ENCODED_KEYSTORE_PROD }} | sed 's/ /\n/g' | base64 --decode >> release-product.keystore
-        fi
-    - name: Decode google service
-      run: |
-        cd CICD/android
-        if [[ $CURRENT_BRANCH == "feature/github-action-release-beta" ]]; then
-          echo $ENCODED_GOOGLE_SERVICES_BETA | sed 's/ /\n/g' | base64 --decode >> google-services.json
-        fi
-        if [[ $CURRENT_BRANCH == "feature/github-action-release-prod" ]]; then
-          echo $ENCODED_GOOGLE_SERVICES_PROD | sed 's/ /\n/g' | base64 --decode >> google-services.json
-        fi
-    - name: Build APK and Upload to S3/Google play
-      run: |
-        cd CICD/android
-        export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-        export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        if [[ $CURRENT_BRANCH == "feature/github-action-release-beta" ]]; then
+
+      - name: Decode google service beta
+        if: github.ref == 'refs/heads/feature/github-action-release-beta'
+        run: |
+          cd CICD/android
+          echo ${{ secrets.ENCODED_GOOGLE_SERVICES_BETA }} | sed 's/ /\n/g' | base64 --decode >> google-services.json
+
+      - name: Decode google service prod
+        if: github.ref == 'refs/heads/feature/github-action-release-prod'
+        run: |
+          cd CICD/android
+          echo ${{ secrets.ENCODED_GOOGLE_SERVICES_PROD }} | sed 's/ /\n/g' | base64 --decode >> google-services.json
+
+      - if: github.ref == 'refs/heads/feature/github-action-release-beta'
+        name: Build APK and Upload to S3/Google play Beta version
+        run: |
+          cd CICD/android
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           echo "APPLICATION_ID=com.cicd.nhanhuynh.app" &>> gradle.properties
           fastlane beta upload_store:true
           aws s3 cp $(pwd)/app/build/outputs/apk/beta/app-beta.apk "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
-        fi
-        if [[ $CURRENT_BRANCH == "feature/github-action-release-prod" ]]; then
+
+      - name: Build APK and Upload to S3/Google play Prod version
+        if: github.ref == 'refs/heads/feature/github-action-release-prod'
+        run: |
+          cd CICD/android
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           echo "APPLICATION_ID=com.cicd.app.pro" &>> gradle.properties
           fastlane beta upload_store:true
           aws s3 cp $(pwd)/app/build/outputs/apk/prod/app-prod.apk "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
-        fi
-    - name: DONE
-      run: echo "DONE"
-        
