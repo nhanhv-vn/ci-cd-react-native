@@ -17,6 +17,7 @@ jobs:
       run: export CURRENT_BRANCH=${GITHUB_REF#refs/heads/}
     - name: Checking current branch
       run: |
+        echo $CURRENT_BRANCH
         if [[ $CURRENT_BRANCH == "feature/github-action-release-beta" ]]; then
           echo "BETA"
         fi
