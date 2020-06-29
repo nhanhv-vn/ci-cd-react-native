@@ -35,6 +35,30 @@ jobs:
           rm -rf node_modules
           rm -rf ~/.rncache
           cd CICD && yarn cache clean && yarn install
+      
+      - name: Cache CocoaPods
+        uses: actions/cache@v2
+        id: cache-cocoapods
+        env:
+          cache-name: cache-cocoapods
+        with:
+          path: |
+            ~/.cocoapods
+            CICD/ios/Pods
+          key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('CICD/ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-${{ env.cache-name }}-
+            ${{ runner.os }}-cache-
+            ${{ runner.os }}-
+
+      - name: Install CocoaPods
+        if: steps.cache-cocoapods.outputs.cache-hit != 'true'
+        run: |
+          cd CICD/ios
+          pod --version
+          curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+          rm -rf Pods && pod install
+          chmod u+x tools/strip_unused_archs.sh
 
       - name: Run unit test
         run: |
