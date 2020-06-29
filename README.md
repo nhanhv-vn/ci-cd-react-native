@@ -1,5 +1,6 @@
 # CICD Practice
-- Practice replease app to google play store
+- Practice release app to google play and app store
+
 
 # Config Environment Variables
 - AWS_ACCESS_KEY_ID: Amazon service access keys
@@ -9,7 +10,13 @@
 - ENCODED_KEYSTORE_PROD: Keys store for release prod
 
 
-#Quickly start
+# Quickly start
+
+Practice trying building app from Circleci and Github Actions
+
+## Circleci
+
+- Config to build and release with Circleci will config in `.circleci` folder
 
 - All android config build in `CICD/android/fastlane`
 
@@ -19,6 +26,14 @@
             
     - Free circleci account
     - Invalid developer account
+
+## Github Actions
+
+- Config to build and release with Github Actions will config in `.github` folder
+
+- All android config build in `CICD/android/fastlane`
+
+- All ios config build in `CICD/ios/fastlane`.
 
 # Reference
 - [Fastlane](https://docs.fastlane.tools/)
