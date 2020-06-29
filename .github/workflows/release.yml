@@ -67,7 +67,7 @@ jobs:
         run: |
           cd CICD/ios
           sudo gem install json
-          bundle update
+          bundle update --all
           bundle install --path vendor/bundle
 
       - name: Cache NPM dependencies
@@ -174,7 +174,7 @@ jobs:
         run: |
           cd CICD/android
           sudo gem install bundler
-          sudo bundle update
+          sudo bundle update --all
           sudo gem install json
           sudo bundle install --path vendor/bundle
 
