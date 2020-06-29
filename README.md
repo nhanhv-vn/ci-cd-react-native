@@ -39,4 +39,6 @@ Practice trying building app from Circleci and Github Actions
 - [Fastlane](https://docs.fastlane.tools/)
 - [Supply](https://docs.fastlane.tools/actions/supply/)
 - [Gym](https://docs.fastlane.tools/actions/gym/)
+
 - [Circleci](https://circleci.com/)
+- [Github Actions](https://github.com/features/actions)
