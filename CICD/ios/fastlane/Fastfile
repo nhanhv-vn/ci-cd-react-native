@@ -24,4 +24,7 @@ platform :ios do
       workspace: 'CICD.xcworkspace'
     )
   end
+  lane :tests do
+    run_tests(scheme: "CICD")
+  end
 end
