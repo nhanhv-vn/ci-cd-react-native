@@ -112,7 +112,8 @@ jobs:
           pod --version
           curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
           rm -rf Pods && pod install
-          
+        # chmod u+x tools/strip_unused_archs.sh
+
       # Notes: Create main.jsbundle https://github.com/facebook/react-native/issues/18472
       - name: Create a main.jsbundle
         run: |
