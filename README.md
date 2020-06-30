@@ -42,3 +42,14 @@ Practice trying building app from Circleci and Github Actions
 
 - [Circleci](https://circleci.com/)
 - [Github Actions](https://github.com/features/actions)
+
+
+- My experiences when build app with Circleci and Github actions(Run Test and build android app on same source code)
+
+|                                     | Circleci       | Github actions|
+| :---                                |    :----:      |          ---: |
+| Duration(Tested build Android)      | ~4m 21s        |  ~4m 23s       |
+| Support OS(FREE account)            | Linux, Windows | Ubuntu, MacOS, Windows |
+| Support cache                       | Yes            | Yes |
+| Syntax template                     | YAML           | YAML |
+| Tracking events to trigger building | Push           | Push or pull request |
