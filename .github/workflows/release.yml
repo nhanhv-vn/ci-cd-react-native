@@ -6,12 +6,12 @@ on:
     branches: [beta, master]
 
 jobs:
-  build:
+  test:
     name: Build common and testing
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, macos-10.15]
+        os: [ubuntu-18.04]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,15 +35,14 @@ jobs:
           rm -rf node_modules
           rm -rf $(pwd)/.rncache
           cd CICD && yarn cache clean && yarn install
-      
+
       - name: Run unit test
         run: |
           cd CICD && yarn test --coverage
-
   ios:
     name: Build iOS
     runs-on: macos-10.15
-    needs: build
+    needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -52,10 +51,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.2.0"
-
-      - name: Install react-native-cli
-        run: |
-          cd CICD && yarn add react-native-cli
 
       - name: Install fastlane
         run: |
@@ -67,14 +62,32 @@ jobs:
         run: |
           cd CICD/ios
           sudo gem install json
+          sudo gem install cocoapods
           bundle update --all
           bundle install --path vendor/bundle
 
+      - name: Cache react-native-cli
+        uses: actions/cache@v2
+        id: react-native-cli
+        env:
+          cache-name: react-native-cli
+        with:
+          path: |
+            CICD/node_modules
+            ~/CICD/.cache/yarn
+          key: ${{ runner.os }}-cache-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-cache-${{ env.cache-name }}
+
+      - name: Install react-native-cli
+        if: steps.react-native-cli.outputs.cache-hit != 'true'
+        run: cd CICD && yarn add react-native-cli
+
       - name: Cache NPM dependencies
         uses: actions/cache@v2
-        id: node-modules-ios
+        id: node-modules
         env:
-          cache-name: node-modules-ios
+          cache-name: node-modules
         with:
           path: CICD/node_modules
           key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
@@ -84,7 +97,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Node Dependencies
-        if: steps.node-modules-ios.outputs.cache-hit != 'true'
+        if: steps.node-modules.outputs.cache-hit != 'true'
         run: |
           rm -rf node_modules
           rm -rf $(pwd)/.rncache
@@ -96,30 +109,24 @@ jobs:
         env:
           cache-name: cache-cocoapods
         with:
-          path: |
-            $(pwd)/.cocoapods
-            CICD/ios/Pods
-          key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('CICD/ios/Podfile.lock') }}
+          path: CICD/ios/Pods
+          key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('**/ios/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-cache-${{ env.cache-name }}-
             ${{ runner.os }}-cache-
             ${{ runner.os }}-
-          
+
       - name: Install CocoaPods
         if: steps.cache-cocoapods.outputs.cache-hit != 'true'
         run: |
           cd CICD/ios
           pod --version
-          curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
           rm -rf Pods && pod install
-        # chmod u+x tools/strip_unused_archs.sh
-
       # Notes: Create main.jsbundle https://github.com/facebook/react-native/issues/18472
       - name: Create a main.jsbundle
         run: |
           cd CICD
           node ./node_modules/react-native-cli/index.js bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'
-
       # NOTES: Only run tests
       - name: Build and upload ipa to S3 internal
         run: |
@@ -127,12 +134,11 @@ jobs:
           export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           cd CICD/ios
-          bundle exec fastlane tests
-
+          bundle exec fastlane -v
   android:
     name: Build Android
     runs-on: ubuntu-18.04
-    needs: build
+    needs: test
     steps:
       - name: Start
         run: echo "Starting build"
@@ -155,22 +161,6 @@ jobs:
         with:
           node-version: "14.2.0"
 
-      - name: Install react-native-cli
-        run: cd CICD && yarn add react-native-cli
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v2
-        id: node-modules-android
-        env:
-          cache-name: node-modules
-        with:
-          path: CICD/node_modules
-          key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-cache-${{ env.cache-name }}-
-            ${{ runner.os }}-cache-
-            ${{ runner.os }}-
-
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         id: node-modules
@@ -185,11 +175,11 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Node Dependencies
-        if: steps.node-modules-android.outputs.cache-hit != 'true'
+        if: steps.node-modules.outputs.cache-hit != 'true'
         run: |
           rm -rf node_modules
           rm -rf ~/.rncache
-          cd CICD && yarn cache clean && yarn install
+          cd CICD && yarn cache clean && yarn add react-native-cli && yarn install
 
       - name: Install awscli
         run: sudo pip install awscli
@@ -200,6 +190,7 @@ jobs:
           sudo gem install bundler
           sudo bundle update --all
           sudo gem install json
+          sudo gem install fastlane -NV
           sudo bundle install --path vendor/bundle
 
         # Ref: https://github.com/actions/virtual-environments/pull/539
