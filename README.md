@@ -35,6 +35,25 @@ Practice trying building app from Circleci and Github Actions
 
 - All ios config build in `CICD/ios/fastlane`.
 
+
+## The ways to reduce the size of App
+
+- Using [Hermes](https://reactnative.dev/docs/hermes)
+    - Enabling Hermes:
+        - Edit `android/app/build.gradle` file and make the change:
+        
+            ```
+            project.ext.react = [
+                entryFile: "index.js",
+                enableHermes: true
+            ]
+            ```
+- Use AAB([Android App Bundle](https://developer.android.com/guide/app-bundle)) instead APK(Android application Package)
+    - Benefits of Android App Bundle
+        - Smaller download zize
+        - On demand app features
+        - Asset-only modules
+
 # Reference
 - [Fastlane](https://docs.fastlane.tools/)
 - [Supply](https://docs.fastlane.tools/actions/supply/)
@@ -48,7 +67,7 @@ Practice trying building app from Circleci and Github Actions
 
 |                                     | Circleci       | Github actions|
 | :---                                |    :----:      |          ---: |
-| Duration(Tested build Android)      | ~4m 21s        |  ~4m 23s       |
+| Duration(Tested build APK Android)      | ~4m 21s        |  ~4m 23s       |
 | Support OS(FREE account)            | Linux, Windows | Ubuntu, MacOS, Windows |
 | Support cache                       | Yes            | Yes |
 | Syntax template                     | YAML           | YAML |
