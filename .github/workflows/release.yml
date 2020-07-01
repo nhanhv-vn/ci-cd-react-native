@@ -230,7 +230,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           echo "APPLICATION_ID=com.cicd.nhanhuynh.app" &>> gradle.properties
           fastlane beta upload_store:true
-          aws s3 cp $(pwd)/app/build/outputs/apk/beta/app-beta.apk "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.apk"
+          aws s3 cp $(pwd)/app/build/outputs/bundle/beta/app-beta.aab "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/beta/$(date +'%y-%m-%d-%H-%M')/cicd-beta.aab"
 
       - name: Build APK and Upload to S3/Google play Prod version
         if: github.ref == 'refs/heads/master'
@@ -240,4 +240,4 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           echo "APPLICATION_ID=com.cicd.app.pro" &>> gradle.properties
           fastlane beta upload_store:true
-          aws s3 cp $(pwd)/app/build/outputs/apk/prod/app-prod.apk "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.apk"
+          aws s3 cp $(pwd)/app/build/outputs/bundle/prod/app-prod.aab "s3://${{ secrets.AWS_S3_BUCKET_NAME }}/prod/$(date +'%y-%m-%d-%H-%M')/cicd-prod.aab"
