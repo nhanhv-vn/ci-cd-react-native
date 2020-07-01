@@ -10,7 +10,7 @@ platform :android do
   lane :beta do |options|
     gradle(task: "clean")
     gradle(
-      task: 'assemble',
+      task: 'bundle',
       build_type: 'Beta'
     )
     if options[:upload_store]
@@ -28,7 +28,7 @@ platform :android do
   lane :prod do |options|
     gradle(task: "clean")
     gradle(
-      task: 'assemble',
+      task: 'bundle',
       build_type: 'Prod'
     )
     if options[:upload_store]
